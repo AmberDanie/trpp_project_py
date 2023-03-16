@@ -14,4 +14,27 @@ class MainWindow(QWidget):
         self.post_label.setText("Введите текст поста: ")
         self.post_label.move(20, 20)
         self.post_edit = QLineEdit(self)
-        self.post_edit.setGeometry()
+        self.post_edit.setGeometry(20, 40, 360, 30)
+
+        self.analyze_button = QPushButton("Analyze", self)
+        self.analyze_button.setGeometry(20, 80, 360, 30)
+        self.analyze_button.clicked.connect(self.analyze_post)
+
+        self.result_label = QLabel(self)
+        self.result_label.setGeometry(20, 120, 360, 30)
+        self.result_label.setAligment(Qt.AlignCenter)
+
+        self.show()
+
+    def analyze_post(self):
+        post_text = self.post_edit.text()
+        
+        ## Тут будет код для анализа поста
+
+        self.result_label.setText("Уровень агрессии: 50%") # Потом изменю
+
+
+def main():
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    sys.exit(app.exec_())
