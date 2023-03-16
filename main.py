@@ -1,5 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton
+from PyQt5.QtCore import Qt
+
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -22,19 +24,22 @@ class MainWindow(QWidget):
 
         self.result_label = QLabel(self)
         self.result_label.setGeometry(20, 120, 360, 30)
-        self.result_label.setAligment(Qt.AlignCenter)
+        self.result_label.setAlignment(Qt.AlignCenter)
 
         self.show()
 
     def analyze_post(self):
         post_text = self.post_edit.text()
-        
+
         ## Тут будет код для анализа поста
 
-        self.result_label.setText("Уровень агрессии: 50%") # Потом изменю
+        self.result_label.setText("Уровень агрессии: 50%")  # Потом изменю
 
 
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
     sys.exit(app.exec_())
+
+
+main()
