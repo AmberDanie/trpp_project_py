@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 
 
 class MainWindow(QWidget):
@@ -9,7 +10,8 @@ class MainWindow(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("Анализатор агрессии в постах")
+        self.setWindowTitle("RageAlert")
+        self.setWindowIcon(QIcon("C:\\Users\\Setup\\Desktop\\trpp_project_py\\minimalistic_icon.png"))
         self.setGeometry(100, 100, 400, 200)
 
         self.post_label = QLabel(self)
