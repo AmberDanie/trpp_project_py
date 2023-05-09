@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>RAGE_ALERT.png</file>
+  </qresource>
+</RCC>

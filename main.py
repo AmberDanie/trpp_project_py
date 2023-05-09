@@ -4,13 +4,19 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtChart import QChart, QChartView, QPieSeries, QPieSlice
 from PyQt5.QtGui import *
+from PyQt5.uic import loadUi
 from SentimentModel import SentimentModel
 from math import ceil
 
 
-def create_pie_chart(data):
+def create_pie_chart(data: object) -> QWidget:
+    """
+
+    :rtype: object
+    """
     # Создание серии диаграммы
     series = QPieSeries()
+    series.setHoleSize(0.5)
 
     # Добавление данных в серию
     for label, (value, color) in data.items():
@@ -23,82 +29,65 @@ def create_pie_chart(data):
     chart.addSeries(series)
     chart.setTitleFont(QFont("Times font", 20))
     chart.setTitle(f"Диаграмма оценки")
+    chart.setAnimationOptions(QChart.SeriesAnimations)
+    chart.setAnimationEasingCurve(QEasingCurve.InCurve)
+    chart.setAnimationDuration(2500)
+    for i in range(3):
+        chart.legend().markers()[i].setFont(QFont("Times font", 15))
 
     # Создание виджета для отображения диаграммы
     chart_view = QChartView(chart)
-    #chart_view.setRenderHint(QChartView.Antialiasing)
 
     return chart_view
 
-class MainWindow(QWidget):
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        loadUi("C:\\Users\\Setup\\Desktop\\trpp_project_py\\mainWindow.ui", self)
+        self.pushButton.clicked.connect(self.go_to_screen2)
+
+    def go_to_screen2(self):
+        widget.setCurrentIndex(widget.currentIndex() + 1)
+        screen2.init_ui(self.plainTextEdit.toPlainText())
+
+
+class Screen2(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(650, 250, 570, 570)
-        self.initUI()
+        self.setWindowTitle("Data")
+        self.pie_chart = QWidget()
 
-    def initUI(self):
-        self.setWindowTitle("RageAlert")
-        self.setWindowIcon(QIcon("C:\\Users\\Setup\\Desktop\\trpp_project_py\\minimalistic_icon.png"))
-
-        self.image_label = QLabel(self)
-        pixmap = QPixmap('C:\\Users\\Setup\\Desktop\\trpp_project_py\\RAGE_ALERT.png')
-        self.image_label.setPixmap(pixmap)
-        self.image_label.setGeometry(10, 10, pixmap.width(), pixmap.height())
-        self.image_label.setAlignment(Qt.AlignCenter)
-
-        self.post_label = QLabel(self)
-        self.post_label.setFont(QFont("Times font", 16))
-        self.post_label.setText("Введите текст поста: ")
-        self.post_label.move(130, 360)
-        self.post_edit = QTextEdit(self)
-        self.post_edit.setGeometry(130, 400, 320, 120)
-
-        self.analyze_button = QPushButton("Analyze", self)
-        self.analyze_button.setGeometry(130, 530, 320, 30)
-        self.analyze_button.clicked.connect(self.analyze_post)
-
-        self.result_label = QLabel(self)
-        self.result_label.setGeometry(20, 120, 360, 60)
-        self.result_label.setAlignment(Qt.AlignCenter)
-
-        #layout = QVBoxLayout()
-        #layout.addWidget(self.pie_chart)
-
-        #self.setLayout(layout)
-
-        self.show()
-
-    def analyze_post(self):
-        post_text = self.post_edit.toPlainText()
-
+    def init_ui(self, text_to_analyze):
+        post_text = text_to_analyze
         sent_model = SentimentModel()
         predictions = sent_model.predict(post_text)
-        results = [float('{:.3f}'.format(predictions[_type]*100)) for _type in ["NEUTRAL", "POSITIVE", "NEGATIVE"]]
-        pred_str = f"NEUTRAL: {results[0]}%\n" \
-                   f"POSITIVE: {results[1]}%\n" \
-                   f"NEGATIVE: {results[2]}%"
+        results = [float('{:.3f}'.format(predictions[_type] * 100)) for _type in ["POSITIVE", "NEUTRAL", "NEGATIVE"]]
+        # pred_str = f"POSITIVE: {results[0]}%\n" \ # НА БУДУЩЕЕ
+        #           f"NEUTRAL: {results[1]}%\n" \
+        #           f"NEGATIVE: {results[2]}%"
 
-        self.pie_chart = create_pie_chart({"NEUTRAL": (results[0], QtGui.QColor("#F5D572")),
-                                           "POSITIVE": (results[1], QtGui.QColor("#32CD32")),
+        self.pie_chart = create_pie_chart({"POSITIVE": (results[0], QtGui.QColor("#32CD32")),
+                                           "NEUTRAL": (results[1], QtGui.QColor("#F5D572")),
                                            "NEGATIVE": (results[2], QtGui.QColor("#FF3E3E"))})
         self.pie_chart.setFont(QFont("Times font", 20))
 
         layout = QVBoxLayout()
+        self.pie_chart.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.pie_chart)
-
-        self.image_label.hide()
 
         self.setLayout(layout)
 
         self.show()
 
-        self.result_label.setText(pred_str)
 
-
-def main():
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    sys.exit(app.exec_())
-
-
-main()
+app = QApplication(sys.argv)
+widget = QStackedWidget()
+main_window = MainWindow()
+screen2 = Screen2()
+widget.addWidget(main_window)
+widget.addWidget(screen2)
+widget.setWindowIcon(QIcon("C:\\Users\\Setup\\Desktop\\trpp_project_py\\minimalistic_icon.png"))
+widget.setWindowTitle("QRage")
+widget.show()
+sys.exit(app.exec_())
