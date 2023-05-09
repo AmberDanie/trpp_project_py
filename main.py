@@ -10,10 +10,6 @@ from math import ceil
 
 
 def create_pie_chart(data: object) -> QWidget:
-    """
-
-    :rtype: object
-    """
     # Создание серии диаграммы
     series = QPieSeries()
     series.setHoleSize(0.5)
@@ -48,37 +44,43 @@ class MainWindow(QMainWindow):
         self.pushButton.clicked.connect(self.go_to_screen2)
 
     def go_to_screen2(self):
-        widget.setCurrentIndex(widget.currentIndex() + 1)
         screen2.init_ui(self.plainTextEdit.toPlainText())
+        self.plainTextEdit.clear()
+        widget.setCurrentIndex(widget.currentIndex() + 1)
 
 
 class Screen2(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Data")
-        self.pie_chart = QWidget()
+        self.layout = QVBoxLayout()
 
     def init_ui(self, text_to_analyze):
+        self.pie_chart = QWidget()
         post_text = text_to_analyze
         sent_model = SentimentModel()
         predictions = sent_model.predict(post_text)
         results = [float('{:.3f}'.format(predictions[_type] * 100)) for _type in ["POSITIVE", "NEUTRAL", "NEGATIVE"]]
-        # pred_str = f"POSITIVE: {results[0]}%\n" \ # НА БУДУЩЕЕ
-        #           f"NEUTRAL: {results[1]}%\n" \
-        #           f"NEGATIVE: {results[2]}%"
+        pred_str = f"POSITIVE: {results[0]}%\nNEUTRAL: {results[1]}%\nNEGATIVE: {results[2]}%"
 
         self.pie_chart = create_pie_chart({"POSITIVE": (results[0], QtGui.QColor("#32CD32")),
                                            "NEUTRAL": (results[1], QtGui.QColor("#F5D572")),
                                            "NEGATIVE": (results[2], QtGui.QColor("#FF3E3E"))})
         self.pie_chart.setFont(QFont("Times font", 20))
+        self.pie_button = QPushButton("Return")
+        self.pie_button.clicked.connect(self.go_to_main_screen)
 
-        layout = QVBoxLayout()
+
         self.pie_chart.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.pie_chart)
+        self.layout.addWidget(self.pie_chart)
+        self.layout.addWidget(self.pie_button)
 
-        self.setLayout(layout)
+        self.setLayout(self.layout)
 
-        self.show()
+    def go_to_main_screen(self):
+        self.layout.removeWidget(self.pie_chart)
+        self.layout.removeWidget(self.pie_button)
+        widget.setCurrentIndex(widget.currentIndex()-1)
 
 
 app = QApplication(sys.argv)
