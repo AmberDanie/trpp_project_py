@@ -1,4 +1,5 @@
 import sys
+import psycopg2
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -7,6 +8,7 @@ from PyQt5.QtGui import *
 from PyQt5.uic import loadUi
 from SentimentModel import SentimentModel
 from math import ceil
+from config import host, user, password, dbname, port
 
 
 def create_pie_chart(data: object) -> QWidget:
@@ -40,7 +42,8 @@ def create_pie_chart(data: object) -> QWidget:
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        loadUi("C:\\Users\\Setup\\Desktop\\trpp_project_py\\mainWindow.ui", self)
+        # loadUi("C:\\Users\\Setup\\Desktop\\trpp_project_py\\mainWindow.ui", self)
+        loadUi("mainWindow.ui", self)
         self.pushButton.clicked.connect(self.go_to_screen2)
 
     def go_to_screen2(self):
@@ -52,6 +55,16 @@ class MainWindow(QMainWindow):
 class Screen2(QWidget):
     def __init__(self):
         super().__init__()
+        # подключение к бд
+        self.conn = psycopg2.connect(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            dbname=dbname,
+        )
+        # создание курсора - выполняет запросы к бд
+        self.curs = self.conn.cursor()
         self.setWindowTitle("Data")
         self.layout = QVBoxLayout()
 
@@ -62,6 +75,13 @@ class Screen2(QWidget):
         predictions = sent_model.predict(post_text)
         results = [float('{:.3f}'.format(predictions[_type] * 100)) for _type in ["POSITIVE", "NEUTRAL", "NEGATIVE"]]
         pred_str = f"POSITIVE: {results[0]}%\nNEUTRAL: {results[1]}%\nNEGATIVE: {results[2]}%"
+
+        # формирование и выполнение запроса
+        query = "INSERT INTO story (text, negative, positive, neutral)" \
+                f" VALUES ('{text_to_analyze}', {results[2]}, {results[0]}, {results[1]})"
+        self.curs.execute(query)
+        # "подтверждение" запроса
+        self.conn.commit()
 
         self.pie_chart = create_pie_chart({"POSITIVE": (results[0], QtGui.QColor("#32CD32")),
                                            "NEUTRAL": (results[1], QtGui.QColor("#F5D572")),
@@ -79,7 +99,21 @@ class Screen2(QWidget):
     def go_to_main_screen(self):
         self.layout.removeWidget(self.pie_chart)
         self.layout.removeWidget(self.pie_button)
-        widget.setCurrentIndex(widget.currentIndex()-1)
+        widget.setCurrentIndex(widget.currentIndex() - 1)
+
+    # вывод всех текстов за одну сессию (кроме последнего)
+    def get_table(self):
+        query = "SELECT ROW_NUMBER() over() as number,* FROM story ORDER BY number DESC"
+        curs.execute(query_catch)
+        result_table = curs.fetchall()
+        for row in result_table[1:]:
+            print(row[1:])
+
+    # очистка бд при удалении объекта
+    def __del__(self):
+        query = "DELETE FROM story *"
+        self.curs.execute(query)
+        self.conn.commit()
 
 
 app = QApplication(sys.argv)
@@ -88,7 +122,8 @@ main_window = MainWindow()
 screen2 = Screen2()
 widget.addWidget(main_window)
 widget.addWidget(screen2)
-widget.setWindowIcon(QIcon("C:\\Users\\Setup\\Desktop\\trpp_project_py\\minimalistic_icon.png"))
+# widget.setWindowIcon(QIcon("C:\\Users\\Setup\\Desktop\\trpp_project_py\\minimalistic_icon.png"))
+widget.setWindowIcon(QIcon("minimalistic_icon.png"))
 widget.setWindowTitle("QRage")
 widget.show()
 sys.exit(app.exec_())
