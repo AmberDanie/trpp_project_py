@@ -70,7 +70,6 @@ class Screen2(QWidget):
         self.pie_button = QPushButton("Return")
         self.pie_button.clicked.connect(self.go_to_main_screen)
 
-
         self.pie_chart.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.pie_chart)
         self.layout.addWidget(self.pie_button)
