@@ -106,8 +106,9 @@ class Screen2(QWidget):
         query = "SELECT ROW_NUMBER() over() as number,* FROM story ORDER BY number DESC"
         curs.execute(query_catch)
         result_table = curs.fetchall()
-        for row in result_table[1:]:
-            print(row[1:])
+        # result_table[1:] потому что без послденей проверки текста
+        # for row in result_table[1:]:
+        #     print(row[1:])
 
     # очистка бд при удалении объекта
     def __del__(self):
