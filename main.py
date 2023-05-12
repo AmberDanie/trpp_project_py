@@ -82,7 +82,7 @@ class Screen2(QWidget):
         self.curs.execute(query)
         # "подтверждение" запроса
         self.conn.commit()
-
+#
         self.pie_chart = create_pie_chart({"POSITIVE": (results[0], QtGui.QColor("#32CD32")),
                                            "NEUTRAL": (results[1], QtGui.QColor("#F5D572")),
                                            "NEGATIVE": (results[2], QtGui.QColor("#FF3E3E"))})
