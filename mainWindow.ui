@@ -51,6 +51,13 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="resButton">
+      <property name="text">
+       <string>GetResults</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
