@@ -54,7 +54,7 @@
     <item>
      <widget class="QPushButton" name="resButton">
       <property name="text">
-       <string>GetResults</string>
+       <string>Last results</string>
       </property>
      </widget>
     </item>
