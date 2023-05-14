@@ -28,15 +28,16 @@ def create_pie_chart(data: object, listBool) -> QWidget:
     chart.setTitleFont(QFont("Times font", 20))
     chart.setAnimationOptions(QChart.SeriesAnimations)
     chart.setAnimationEasingCurve(QEasingCurve.InCurve)
-    chart.setAnimationDuration(2500)
     for i in range(3):
         chart.legend().markers()[i].setFont(QFont("Times font", 15))
 
     chart.setBackgroundVisible(False)
     if listBool:
         chart.setTitle(f"Диаграмма оценки")
+        chart.setAnimationDuration(2500)
     else:
         chart.legend().hide()
+        chart.setAnimationDuration(0)
 
     # Создание виджета для отображения диаграммы
     chart_view = QChartView(chart)
@@ -71,9 +72,14 @@ class Screen2(QWidget):
         super().__init__()
         self.setWindowTitle("Data")
         self.layout = QVBoxLayout()
+        self.t_layout = QStackedLayout()
 
         self.pie_chart = QWidget()
         self.pie_button = QPushButton("Return")
+        self.pie_button.clicked.connect(self.go_to_main_screen)
+
+        self.layout.addLayout(self.t_layout)
+        self.layout.addWidget(self.pie_button)
 
     def init_ui(self, text_to_analyze: str):
         self.pie_chart = QWidget()
@@ -95,17 +101,14 @@ class Screen2(QWidget):
                                            "NEUTRAL": (results[1], QtGui.QColor("#F5D572")),
                                            "NEGATIVE": (results[2], QtGui.QColor("#FF3E3E"))}, listBool=True)
         self.pie_chart.setFont(QFont("Times font", 20))
-        self.pie_button.clicked.connect(self.go_to_main_screen)
 
         self.pie_chart.setAlignment(Qt.AlignCenter)
-        self.layout.addWidget(self.pie_chart)
-        self.layout.addWidget(self.pie_button)
+        self.t_layout.addWidget(self.pie_chart)
 
         self.setLayout(self.layout)
 
     def go_to_main_screen(self):
-        self.layout.removeWidget(self.pie_chart)
-        self.layout.removeWidget(self.pie_button)
+        self.t_layout.removeWidget(self.pie_chart)
         widget.setCurrentIndex(widget.currentIndex() - 1)
 
     # вывод всех текстов за одну сессию (кроме последнего)
@@ -148,7 +151,6 @@ class Screen3(QWidget):
 
         percentage_text = QLabel("Percentage")
         percentage_text.setAlignment(Qt.AlignCenter)
-        percentage_text.set
         diagram_text = QLabel("Diagram")
         diagram_text.setAlignment(Qt.AlignCenter)
         inputed_text = QLabel("Inputed text")
@@ -178,21 +180,28 @@ class Screen3(QWidget):
             row_pie = create_pie_chart({"POSITIVE": (row[3], QtGui.QColor("#32CD32")),
                                         "NEUTRAL": (row[4], QtGui.QColor("#F5D572")),
                                         "NEGATIVE": (row[2], QtGui.QColor("#FF3E3E"))}, listBool=False)
-            print(3)
             row_pie.setFixedSize(300, 300)
+            img_url = 'angry.png'
+            if max(row[2:5]) == row[3]:
+                img_url = 'smile.png'
+            elif max(row[2:5]) == row[4]:
+                img_url = 'pokerface.png'
+            row_pie.setStyleSheet(f"background-image: url({img_url});"
+                                  "background-position: center;"
+                                     "background-repeat: no-repeat; "
+                                     "background-attachment: fixed; "
+                                     "background-size: 100% 100%;")
             pred_str = f"POSITIVE: {row[3]}%\nNEUTRAL: {row[4]}%\nNEGATIVE: {row[2]}%"
             text_label = QLabel()
             text_label.setAlignment(Qt.AlignCenter)
             stat_label = QLabel(pred_str)
             stat_label.setAlignment(Qt.AlignCenter)
-            stat_label.setStyleSheet('width: 25%; text-align="center";')
-            text_label.setStyleSheet("width: 25%; text-align='center':")
-            print(2)
+            stat_label.setStyleSheet('width: 33%; text-align="center"')
+            text_label.setStyleSheet("width: 33%; text-align='center'")
             if row[1]:
                 text_label.setText(row[1])
             else:
                 text_label.setText("<<empty>>")
-            print(1)
 
             layout.addWidget(stat_label)
             layout.addWidget(row_pie)
@@ -203,7 +212,6 @@ class Screen3(QWidget):
 
     def go_to_main_screen(self):
         widget.setCurrentIndex(widget.currentIndex() - 2)
-
 
 
 # подключение к бд
