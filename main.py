@@ -11,7 +11,7 @@ from math import ceil
 from config import host, user, password, dbname, port
 
 
-def create_pie_chart(data: object, listBool) -> QWidget:
+def create_pie_chart(data: object, list_bool) -> QWidget:
     # Создание серии диаграммы
     series = QPieSeries()
     series.setHoleSize(0.5)
@@ -32,7 +32,7 @@ def create_pie_chart(data: object, listBool) -> QWidget:
         chart.legend().markers()[i].setFont(QFont("Times font", 15))
 
     chart.setBackgroundVisible(False)
-    if listBool:
+    if list_bool:
         chart.setTitle(f"Диаграмма оценки")
         chart.setAnimationDuration(2500)
     else:
@@ -88,7 +88,7 @@ class Screen2(QWidget):
         predictions = sent_model.predict(post_text)
         results = [float('{:.3f}'.format(predictions[_type] * 100)) for
                    _type in ["POSITIVE", "NEUTRAL", "NEGATIVE"]]
-        pred_str = f"POSITIVE: {results[0]}%\nNEUTRAL: {results[1]}%\nNEGATIVE: {results[2]}%"
+        # pred_str = f"POSITIVE: {results[0]}%\nNEUTRAL: {results[1]}%\nNEGATIVE: {results[2]}%"
 
         # формирование и выполнение запроса
         query = "INSERT INTO story (text, positive, neutral, negative)" \
@@ -99,7 +99,7 @@ class Screen2(QWidget):
 
         self.pie_chart = create_pie_chart({"POSITIVE": (results[0], QtGui.QColor("#32CD32")),
                                            "NEUTRAL": (results[1], QtGui.QColor("#F5D572")),
-                                           "NEGATIVE": (results[2], QtGui.QColor("#FF3E3E"))}, listBool=True)
+                                           "NEGATIVE": (results[2], QtGui.QColor("#FF3E3E"))}, list_bool=True)
         self.pie_chart.setFont(QFont("Times font", 20))
 
         self.pie_chart.setAlignment(Qt.AlignCenter)
@@ -111,17 +111,8 @@ class Screen2(QWidget):
         self.t_layout.removeWidget(self.pie_chart)
         widget.setCurrentIndex(widget.currentIndex() - 1)
 
-    # вывод всех текстов за одну сессию (кроме последнего)
-    def get_table(self):
-        query = "SELECT ROW_NUMBER() over() as number,* FROM story ORDER BY number DESC"
-        curs.execute(query)
-        result_table = curs.fetchall()
-        for row in result_table:
-            print(row[1:])
-
     # очистка бд при удалении объекта
     def __del__(self):
-        self.get_table()
         query = "DELETE FROM story *"
         curs.execute(query)
         conn.commit()
@@ -167,7 +158,6 @@ class Screen3(QWidget):
 
         self.setLayout(self.top_layout)
 
-
     def get_last_res(self):
         query = "SELECT ROW_NUMBER() over() as number,* FROM story ORDER BY number DESC"
         curs.execute(query)
@@ -179,18 +169,18 @@ class Screen3(QWidget):
             layout = QHBoxLayout()
             row_pie = create_pie_chart({"POSITIVE": (row[3], QtGui.QColor("#32CD32")),
                                         "NEUTRAL": (row[4], QtGui.QColor("#F5D572")),
-                                        "NEGATIVE": (row[2], QtGui.QColor("#FF3E3E"))}, listBool=False)
+                                        "NEGATIVE": (row[2], QtGui.QColor("#FF3E3E"))}, list_bool=False)
             row_pie.setFixedSize(300, 300)
-            img_url = 'angry.png'
+            img_url = 'images/angry.png'
             if max(row[2:5]) == row[3]:
-                img_url = 'smile.png'
+                img_url = 'images/smile.png'
             elif max(row[2:5]) == row[4]:
-                img_url = 'pokerface.png'
+                img_url = 'images/pokerface.png'
             row_pie.setStyleSheet(f"background-image: url({img_url});"
                                   "background-position: center;"
-                                     "background-repeat: no-repeat; "
-                                     "background-attachment: fixed; "
-                                     "background-size: 100% 100%;")
+                                  "background-repeat: no-repeat; "
+                                  "background-attachment: fixed; "
+                                  "background-size: 100% 100%;")
             pred_str = f"POSITIVE: {row[3]}%\nNEUTRAL: {row[4]}%\nNEGATIVE: {row[2]}%"
             text_label = QLabel()
             text_label.setAlignment(Qt.AlignCenter)
@@ -209,8 +199,8 @@ class Screen3(QWidget):
 
             self.info_layout.addLayout(layout)
 
-
-    def go_to_main_screen(self):
+    @staticmethod
+    def go_to_main_screen():
         widget.setCurrentIndex(widget.currentIndex() - 2)
 
 
@@ -230,11 +220,11 @@ main_window = MainWindow()
 screen2 = Screen2()
 screen3 = Screen3()
 
-widget.addWidget(main_window) # 0
-widget.addWidget(screen2) # 1
-widget.addWidget(screen3) # 2
+widget.addWidget(main_window)  # 0
+widget.addWidget(screen2)  # 1
+widget.addWidget(screen3)  # 2
 
-widget.setWindowIcon(QIcon("minimalistic_icon.png"))
+widget.setWindowIcon(QIcon("images/minimalistic_icon.png"))
 widget.setWindowTitle("QRage")
 widget.show()
 sys.exit(app.exec_())
