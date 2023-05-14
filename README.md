@@ -13,9 +13,9 @@
 
 ## Скриншоты
  <div style="display: flex; width: 100%">
-  <img src="main_screen.png" width="32.25%"/>
-  <img src="diagram.png" width="32.75%"/>
-  <img src="last_results.png" width="33.5%"/>
+  <img src="forReadme/main_screen.png" width="32.25%"/>
+  <img src="forReadme/diagram.png" width="32.75%"/>
+  <img src="forReadme/last_results.png" width="33.5%"/>
  </div>
  
  ## Видео процесса использования
