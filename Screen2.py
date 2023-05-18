@@ -32,8 +32,8 @@ class Screen2(QWidget):
         # pred_str = f"POSITIVE: {results[0]}%\nNEUTRAL: {results[1]}%\nNEGATIVE: {results[2]}%"
 
         # формирование и выполнение запроса
-        query = "INSERT INTO story (text, positive, neutral, negative)" \
-                f" VALUES ('{text_to_analyze}', {results[0]}, {results[1]}, {results[2]})"
+        query = "INSERT INTO story (user_id, text, positive, neutral, negative)" \
+                f" VALUES ('{globalVars.user_id}', '{text_to_analyze}', {results[0]}, {results[1]}, {results[2]})"
         globalVars.curs.execute(query)
         # "подтверждение" запроса
         globalVars.conn.commit()
