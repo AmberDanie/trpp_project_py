@@ -1,6 +1,6 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QStackedLayout, QPushButton
 
 from CreatePieChart import create_pie_chart
@@ -11,7 +11,6 @@ import globalVars
 class Screen2(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Data")
         self.layout = QVBoxLayout()
         self.t_layout = QStackedLayout()
 
@@ -29,18 +28,17 @@ class Screen2(QWidget):
         predictions = sent_model.predict(post_text)
         results = [float('{:.3f}'.format(predictions[_type] * 100)) for
                    _type in ["POSITIVE", "NEUTRAL", "NEGATIVE"]]
-        # pred_str = f"POSITIVE: {results[0]}%\nNEUTRAL: {results[1]}%\nNEGATIVE: {results[2]}%"
 
         # формирование и выполнение запроса
-        query = "INSERT INTO story (text, positive, neutral, negative)" \
-                f" VALUES ('{text_to_analyze}', {results[0]}, {results[1]}, {results[2]})"
+        query = "INSERT INTO story (user_id, text, positive, neutral, negative)" \
+                f" VALUES ('{globalVars.user_id}', '{text_to_analyze}', {results[0]}, {results[1]}, {results[2]})"
         globalVars.curs.execute(query)
         # "подтверждение" запроса
         globalVars.conn.commit()
 
-        self.pie_chart = create_pie_chart({"POSITIVE": (results[0], QtGui.QColor("#32CD32")),
-                                           "NEUTRAL": (results[1], QtGui.QColor("#F5D572")),
-                                           "NEGATIVE": (results[2], QtGui.QColor("#FF3E3E"))}, list_bool=True)
+        self.pie_chart = create_pie_chart({f"{results[0]}%": (results[0], QtGui.QColor("#32CD32")),
+                                           f"{results[1]}%": (results[1], QtGui.QColor("#F5D572")),
+                                           f"{results[2]}%": (results[2], QtGui.QColor("#FF3E3E"))}, list_bool=True)
         self.pie_chart.setFont(QFont("Times font", 20))
 
         self.pie_chart.setAlignment(Qt.AlignCenter)

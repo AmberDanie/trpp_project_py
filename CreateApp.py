@@ -11,7 +11,7 @@ class CreateApp:
         globalVars.widget.addWidget(globalVars.screen2)  # 1
         globalVars.widget.addWidget(globalVars.screen3)  # 2
 
-        globalVars.widget.setWindowIcon(QIcon("images/minimalistic_icon.png"))
+        globalVars.widget.setWindowIcon(QIcon("images/pie-chart-icon.png"))
         globalVars.widget.setWindowTitle("QRage")
         globalVars.widget.show()
         sys.exit(globalVars.app.exec_())
