@@ -6,10 +6,12 @@ from typing import Dict
 TOKENIZER_MODEL = 'blanchefort/rubert-base-cased-sentiment-rusentiment'
 SENTIMENT_MODEL = 'blanchefort/rubert-base-cased-sentiment-rusentiment'
 
+
 class OutputSentimentModel:
     NEUTRAL: float
     POSITIVE: float
     NEGATIVE: float
+
 
 class SentimentModel:
     """class SentimentModel
@@ -19,6 +21,7 @@ class SentimentModel:
         model(transformers.models.bert.modeling_bert.BertForSequenceClassification): model that return sentiment score
 
     """
+
     def __init__(self):
         self.tokenizer = BertTokenizerFast.from_pretrained(TOKENIZER_MODEL)
         self.model = AutoModelForSequenceClassification.from_pretrained(SENTIMENT_MODEL, return_dict=True)
@@ -31,7 +34,8 @@ class SentimentModel:
             text(str) : the input text that to be calculated for sentiment score
 
         Returns:
-            sentiment_dict(OutputSentimentModel): the sentiment score, the dict that contains three keys ('NEUTRAL', 'POSITIVE', 'NEGATIVE')
+            sentiment_dict(OutputSentimentModel): the sentiment score
+            the dict that contains three keys ('NEUTRAL', 'POSITIVE', 'NEGATIVE')
 
         """
         inputs = self.tokenizer(text, max_length=512, padding=True, truncation=True, return_tensors='pt')
@@ -41,5 +45,3 @@ class SentimentModel:
                           'POSITIVE': predicted[0][1].item(),
                           'NEGATIVE': predicted[0][2].item()}
         return sentiment_dict
-
-

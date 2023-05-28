@@ -9,7 +9,14 @@ import globalVars
 
 
 class Screen2(QWidget):
+    """
+    Second window class
+    """
+
     def __init__(self):
+        """
+        Constructor: set layouts and main elements
+        """
         super().__init__()
         self.layout = QVBoxLayout()
         self.t_layout = QStackedLayout()
@@ -22,6 +29,11 @@ class Screen2(QWidget):
         self.layout.addWidget(self.pie_button)
 
     def init_ui(self, text_to_analyze: str):
+        """
+        Method for combination SentimentModel results and visualization
+        Sends analyze results to database
+        :param text_to_analyze: text for analyzing
+        """
         self.pie_chart = QWidget()
         post_text = text_to_analyze.lower()
         sent_model = SentimentModel()
@@ -47,5 +59,8 @@ class Screen2(QWidget):
         self.setLayout(self.layout)
 
     def go_to_main_screen(self):
+        """
+        Method for switching user to first (main) window
+        """
         self.t_layout.removeWidget(self.pie_chart)
         globalVars.widget.setCurrentIndex(globalVars.widget.currentIndex() - 1)

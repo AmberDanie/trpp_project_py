@@ -8,7 +8,14 @@ import globalVars
 
 
 class Screen3(QWidget):
+    """
+    Class of third window
+    """
+
     def __init__(self):
+        """
+        Constructor: set layouts and main elements
+        """
         super().__init__()
 
         self.top_layout = QVBoxLayout(self)
@@ -51,6 +58,9 @@ class Screen3(QWidget):
         self.setLayout(self.top_layout)
 
     def get_last_res(self):
+        """
+        Method for getting results of previous analyze and visualization its
+        """
         query = "SELECT ROW_NUMBER() over() as number, * FROM story " \
                 f"WHERE user_id = '{globalVars.user_id}' ORDER BY number DESC"
         globalVars.curs.execute(query)
@@ -94,4 +104,7 @@ class Screen3(QWidget):
 
     @staticmethod
     def go_to_main_screen():
+        """
+        Method for switching user to main window
+        """
         globalVars.widget.setCurrentIndex(globalVars.widget.currentIndex() - 2)

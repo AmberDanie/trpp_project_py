@@ -17,6 +17,6 @@ class CreateApp:
         sys.exit(globalVars.app.exec_())
 
     def __del__(self):
-        query = "DELETE FROM story *"
+        query = f"DELETE FROM story * WHERE user_id = '{globalVars.user_id}'"
         globalVars.curs.execute(query)
         globalVars.conn.commit()

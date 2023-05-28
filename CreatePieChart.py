@@ -5,6 +5,12 @@ from PyQt5.QtWidgets import QWidget
 
 
 def create_pie_chart(data: object, list_bool) -> QWidget:
+    """
+    Creates diagrams for second and third windows
+    :param data: dictionary of sentimental marks
+    :param list_bool: chooses type of visualisation (second or third window)
+    :return: widget for showing diagrams
+    """
     # Создание серии диаграммы
     series = QPieSeries()
     series.setHoleSize(0.5)
