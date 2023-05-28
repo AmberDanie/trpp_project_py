@@ -19,9 +19,8 @@
  </div>
  
  ## Видео процесса использования
- 
 
-https://github.com/AmberDanie/trpp_project_py/assets/91751423/51c13e73-33e5-428d-8b62-66bc03f075f8
+https://github.com/AmberDanie/trpp_project_py/assets/91751423/b2fb1901-7cac-4127-be15-30511b5ebb5a
 
 ## Участники проекта
 
