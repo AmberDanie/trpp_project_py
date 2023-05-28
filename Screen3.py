@@ -2,6 +2,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QPushButton, QLabel, QHBoxLayout
 from PyQt5.QtGui import QFont
+import textwrap
 
 from CreatePieChart import create_pie_chart
 import globalVars
@@ -35,19 +36,20 @@ class Screen3(QWidget):
         self.returnButton.clicked.connect(self.go_to_main_screen)
 
         percentage_text = QLabel("Percentage")
-        percentage_text.setFont(QFont("Times new roman", 12))
+        percentage_text.setFont(QFont("Times new roman", 16))
         percentage_text.setAlignment(Qt.AlignCenter)
         diagram_text = QLabel("Diagram")
-        diagram_text.setFont(QFont("Times new roman", 12))
+        diagram_text.setFont(QFont("Times new roman", 16))
         diagram_text.setAlignment(Qt.AlignCenter)
         inputted_text = QLabel("Inputted text")
-        inputted_text.setFont(QFont("Times new roman", 12))
+        inputted_text.setFont(QFont("Times new roman", 16))
         inputted_text.setAlignment(Qt.AlignCenter)
 
         layout = QHBoxLayout()
-        layout.addWidget(percentage_text)
-        layout.addWidget(diagram_text)
-        layout.addWidget(inputted_text)
+        layout.addWidget(percentage_text, 33)
+        layout.addWidget(diagram_text, 33)
+        layout.addWidget(inputted_text, 33)
+        layout.setContentsMargins(40, 0, 60, 0)
 
         self.top_layout.addLayout(layout)
         self.top_layout.addWidget(self.scrollable_area)
@@ -89,16 +91,14 @@ class Screen3(QWidget):
             text_label.setAlignment(Qt.AlignCenter)
             stat_label = QLabel(pred_str)
             stat_label.setAlignment(Qt.AlignCenter)
-            stat_label.setStyleSheet('width: 33%; text-align="center"')
-            text_label.setStyleSheet("width: 33%; text-align='center'")
             if row[2]:
-                text_label.setText(row[2])
+                text_label.setText(textwrap.fill(row[2], 50))
             else:
                 text_label.setText("<<empty>>")
 
-            layout.addWidget(stat_label)
-            layout.addWidget(row_pie)
-            layout.addWidget(text_label)
+            layout.addWidget(stat_label, 33)
+            layout.addWidget(row_pie, 33)
+            layout.addWidget(text_label, 33)
 
             self.info_layout.addLayout(layout)
 

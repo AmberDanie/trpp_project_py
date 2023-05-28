@@ -11,6 +11,7 @@ class CreateApp:
         globalVars.widget.addWidget(globalVars.screen2)  # 1
         globalVars.widget.addWidget(globalVars.screen3)  # 2
 
+        globalVars.widget.setFixedSize(1200, 780)
         globalVars.widget.setWindowIcon(QIcon("images/pie-chart-icon.png"))
         globalVars.widget.setWindowTitle("QRage")
         globalVars.widget.show()
